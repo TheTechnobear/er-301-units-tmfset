@@ -54,7 +54,7 @@ endif
 ifeq ($(ARCH),darwin)
   INSTALLROOT.darwin = ~/.od/front
   CFLAGS.darwin = -Wno-deprecated-declarations -march=native -fPIC
-  LFLAGS = -dynamic -undefined dynamic_lookup -lSystem
+  LFLAGS = -shared -dynamic -undefined dynamic_lookup
 endif
 
 CFLAGS.common = -Wall -ffunction-sections -fdata-sections

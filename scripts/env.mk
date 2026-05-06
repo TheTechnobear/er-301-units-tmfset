@@ -1,6 +1,6 @@
 include scripts/utils.mk
 
-SDKPATH ?= er-301
+SDKPATH ?= ../er-301
 
 # Determine PROFILE if it's not provided...
 # testing | release | debug
