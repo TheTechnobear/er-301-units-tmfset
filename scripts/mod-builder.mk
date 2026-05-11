@@ -47,8 +47,12 @@ ifeq ($(ARCH),am335x)
 endif
 
 ifeq ($(ARCH),linux)
-  CFLAGS.linux = -Wno-deprecated-declarations -msse4 -fPIC
-  LFLAGS = -shared
+	ifeq ($(CROSS_COMPILE),1)
+		CFLAGS.linux = -Wno-deprecated-declarations -Wno-c++11-narrowing $(LINUX_CROSS_CPUFLAGS) -fPIC
+	else
+		CFLAGS.linux = -Wno-deprecated-declarations -msse4 -fPIC
+	endif
+	LFLAGS = -shared
 endif
 
 ifeq ($(ARCH),darwin)
@@ -68,7 +72,7 @@ CFLAGS.debug   = -g -DBUILDOPT_TESTING
 # Do you need any additional preprocess SYMBOLS?
 SYMBOLS =
 
-INCLUDES  = $(MOD_DIR) $(COMMON_DIR)/
+INCLUDES = $(MOD_DIR) $(COMMON_DIR)/
 INCLUDES += $(SDKPATH) $(SDKPATH)/arch/$(ARCH) $(SDKPATH)/emu
 
 CFLAGS += $(CFLAGS.common) $(CFLAGS.$(ARCH)) $(CFLAGS.$(PROFILE))
@@ -81,6 +85,10 @@ SWIGFLAGS   += $(addprefix -I,$(INCLUDES))
 CFLAGS.swig  = $(CFLAGS.common) $(CFLAGS.$(ARCH)) $(CFLAGS.size)
 CFLAGS.swig += $(addprefix -I,$(INCLUDES)) -I$(SDKPATH)/libs/lua54
 CFLAGS.swig += $(addprefix -D,$(SYMBOLS))
+ifeq ($(CROSS_COMPILE),1)
+	CFLAGS.swig += -I$(GXXROOT)
+	CFLAGS.swig += -I$(GXXROOT)/$(GXX_INCLUDE_TRIPLE)
+endif
 
 #######################################################
 # Rules
